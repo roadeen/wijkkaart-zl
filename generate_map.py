@@ -18,7 +18,7 @@ GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN')
 if not GITHUB_TOKEN:
     raise ValueError("GITHUB_TOKEN environment variable not set.")
 
-REPO_NAME = "roadeen/wijkkaart"
+REPO_NAME = "roadeen/wijkkaart-zl"
 FILE_PATH_IN_REPO = "index.html"
 LOCAL_OUTPUT = "index.html"
 OPMERKING_COLOR = '#9b59b6'  # Purple
