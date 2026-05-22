@@ -31,7 +31,7 @@ jobs:
       
       - name: Run map generation script
         env:
-          GITHUB_TOKEN: ${{ secrets.MAP_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
         run: |
           python generate_map.py
