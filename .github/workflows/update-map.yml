@@ -2,42 +2,59 @@ name: Update Map
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *'   # every hour
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: write   # REQUIRED so the workflow can push commits
 
 jobs:
   update-map:
     runs-on: ubuntu-latest
 
     steps:
+      # ----------------------------
+      # 1. Checkout repo
+      # ----------------------------
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # ----------------------------
+      # 2. Setup Python
+      # ----------------------------
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
+      # ----------------------------
+      # 3. Install dependencies
+      # ----------------------------
       - name: Install dependencies
         run: |
-          pip install pandas folium gspread oauth2client PyGithub
+          pip install pandas folium gspread oauth2client
 
-      - name: Run map generation script
+      # ----------------------------
+      # 4. Run map generator
+      # ----------------------------
+      - name: Generate map
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON_ZL }}
+          GOOGLE_CREDENTIALS_JSON_ZL: ${{ secrets.GOOGLE_CREDENTIALS_JSON_ZL }}
         run: |
           python generate_map.py
 
+      # ----------------------------
+      # 5. Commit and push changes
+      # ----------------------------
       - name: Commit and push changes
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add .
-          git commit -m "Auto-update map" || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add index.html
+
+          git commit -m "Auto-update map" || echo "No changes to commit"
+
           git push
